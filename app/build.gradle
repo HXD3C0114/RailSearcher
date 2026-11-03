@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 密钥读取：优先读 local.properties 里的 API_KEY，没有则用下面内置的值。
+// 想换密钥：在工程根目录建 local.properties，写一行
+//   API_KEY=sk_12306api_你的密钥
+def localProps = new Properties()
+def lpFile = rootProject.file('local.properties')
+if (lpFile.exists()) {
+    localProps.load(new FileInputStream(lpFile))
+}
+def resolvedKey = (localProps.getProperty('API_KEY') ?: 'sk_12306api_BqTmN6OdMd3XcWxdET8o9Q1bqlFgPBaA').trim()
+
+android {
+    namespace 'com.railsearcher.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.railsearcher.app"
+        minSdk 24          // Android 7.0 及以上
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        buildConfigField 'String', 'API_KEY', '"' + resolvedKey + '"'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    // 产物命名：Rail-Searcher-1.0.apk
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Rail-Searcher-${variant.versionName}${variant.name == 'debug' ? '-debug' : ''}.apk"
+        }
+    }
+}
+
+// 纯系统 API（WebView + HttpURLConnection），不需要任何第三方依赖
+dependencies {
+}
