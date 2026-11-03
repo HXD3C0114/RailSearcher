@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rail Searcher</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hd">
+  <div class="hd-t">
+    <h1>Rail Searcher</h1>
+    <button id="btnHealth" class="mini">刷新状态</button>
+  </div>
+  <div id="status" class="status">正在读取服务状态…</div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-t="line">线路</button>
+  <button class="tab" data-t="station">车站</button>
+  <button class="tab" data-t="train">车次</button>
+  <button class="tab" data-t="stock">机车车辆</button>
+</nav>
+
+<main>
+  <section class="pane on" id="p-line">
+    <form class="fm" data-api="line">
+      <input name="name" list="lineList" placeholder="线路名，如 京沪高速线 / 京广高铁" autocomplete="off">
+      <datalist id="lineList"></datalist>
+      <button type="submit">查询</button>
+    </form>
+    <p class="hint">线路名以接口返回为准，命名不统一（京广高铁 / 京沪高速线 / 贵广客专线）。输入时自动联想。</p>
+  </section>
+
+  <section class="pane" id="p-station">
+    <form class="fm" data-api="station">
+      <input name="name" placeholder="站名，如 北京南 / 黄渡所" autocomplete="off">
+      <button type="submit">查询</button>
+    </form>
+    <p class="hint">站名原样保留，「站」「所」不删。</p>
+  </section>
+
+  <section class="pane" id="p-train">
+    <form class="fm" data-api="train">
+      <input name="no" placeholder="车次，如 G1 / C1101/C1104" autocomplete="off">
+      <button type="submit">查询</button>
+    </form>
+    <p class="hint">含 <code>/</code> 的车次原样传；成对车次只传一个也能查到。</p>
+  </section>
+
+  <section class="pane" id="p-stock">
+    <form class="fm" data-api="stock">
+      <input name="no" placeholder="车号，如 HXD3D-0001" autocomplete="off">
+      <button type="submit">查询</button>
+    </form>
+    <p class="hint">数据来自车迷站点机车车辆户口，非官方台账。</p>
+  </section>
+
+  <div id="result" class="result"></div>
+</main>
+
+<footer class="ft">
+  <div class="admin-only">
+    <div class="ft-row">
+      <span id="statLine" class="stat-line">本次会话：0 次调用</span>
+      <button id="btnClear" class="mini">清空缓存</button>
+    </div>
+    <details class="log-wrap">
+      <summary>最近调用明细</summary>
+      <div id="logBox" class="logbox">暂无</div>
+    </details>
+  </div>
+
+  <!-- 意见反馈：所有用户可用 -->
+  <div class="fb">
+    <button id="btnFeedback" class="mini wide">意见反馈</button>
+    <div id="fbForm" class="fb-form hidden">
+      <textarea id="fbText" rows="4" placeholder="说说你的想法、遇到的问题，或想要的功能…"></textarea>
+      <div class="fb-actions">
+        <button id="fbSubmit" class="primary">提交</button>
+        <button id="fbCancel">取消</button>
+      </div>
+      <p class="fb-note">反馈会先保存在本机，若配置了云端后端会一并上传。</p>
+    </div>
+  </div>
+
+  <!-- 管理模式：额度 / 统计 / 反馈管理 -->
+  <div id="adminPanel" class="admin-only admin-panel">
+    <div class="ap-head">
+      <span class="ap-title">管理模式</span>
+      <button id="btnLogout" class="mini">退出</button>
+    </div>
+
+    <div class="ap-card">
+      <div class="ap-sub">额度</div>
+      <div id="billBox" class="bill-box">—</div>
+    </div>
+
+    <div class="ap-card">
+      <div class="ap-sub">云端后端（存反馈，可选）</div>
+      <div class="ap-row">
+        <input id="backendInput" placeholder="https://xxx.workers.dev" autocomplete="off">
+        <button id="btnBackend" class="mini">保存</button>
+      </div>
+      <p class="fb-note">留空则反馈只存本机。填了才能看到其他用户提交的反馈。</p>
+    </div>
+
+    <div class="ap-card">
+      <div class="ap-row">
+        <div class="ap-sub" style="flex:1">意见反馈</div>
+        <button id="btnFbRefresh" class="mini">刷新</button>
+        <button id="btnFbCsv" class="mini">导出</button>
+        <button id="btnFbClear" class="mini danger">清本机</button>
+      </div>
+      <div id="fbList" class="fb-list">点击「刷新」加载</div>
+    </div>
+
+    <p class="tip admin-tip">
+      官方自助查询（余额 / 账单 / 改密码）：
+      <a id="userLink" href="https://12306api.lilv5.cn/user">/user</a>
+      <span id="userPw"></span>
+    </p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
