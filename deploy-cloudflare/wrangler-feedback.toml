@@ -1,0 +1,15 @@
+name = "railsearcher-feedback"
+main = "worker-feedback.js"
+compatibility_date = "2026-10-29"
+
+# 密钥/口令不要写在这里。
+# 部署后在 Cloudflare 控制台 → 该 Worker → Settings 里设置：
+#   Variables and Secrets → ADMIN_PASS = passwords   （类型选 Secret）
+#   Bindings → KV Namespace → 变量名 FEEDBACK → 绑定一个 KV 命名空间
+#
+# 若用命令行部署，先建 KV：
+#   wrangler kv:namespace create FEEDBACK
+# 然后把返回的 id 填到下面（kV 绑定不建议把 id 提交到公开仓库，这里仅作示例）
+# [[kv_namespaces]]
+# binding = "FEEDBACK"
+# id = "你的KV命名空间ID"
